@@ -7,13 +7,13 @@ resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier       = ["${aws_subnet.public.id}"]
 
   launch_template {
-    id      = "${aws_launch_template.frontend.id}"
+    id      = aws_launch_template.frontend.id
     version = "$Latest"
   }
 
   tag {
     key                 = "Name"
-    value               = "${var.candidate}"
+    value               = var.candidate
     propagate_at_launch = true
   }
 }
@@ -95,7 +95,7 @@ resource "aws_iam_role_policy_attachment" "node" {
 }
 
 resource "aws_security_group" "node" {
-  vpc_id = "${aws_vpc.vpc.id}"
+  vpc_id = aws_vpc.vpc.id
   name   = "${var.candidate}-node"
 
   tags = {
@@ -109,7 +109,7 @@ resource "aws_security_group_rule" "node_ingress" {
   to_port           = 0
   protocol          = "all"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.node.id}"
+  security_group_id = aws_security_group.node.id
 }
 
 resource "aws_security_group_rule" "node_egress" {
@@ -118,5 +118,5 @@ resource "aws_security_group_rule" "node_egress" {
   to_port           = 0
   protocol          = "all"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.node.id}"
+  security_group_id = aws_security_group.node.id
 }
