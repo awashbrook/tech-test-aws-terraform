@@ -1,7 +1,7 @@
 variable "candidate" {
-  description = "Candidate name"
+  description = "andy"
 }
 
 variable "vpc_cidr" {
-  description = "CIDR to use for the VPC"
+  description = "10.150.0.0/20"
 }
