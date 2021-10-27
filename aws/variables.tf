@@ -1,7 +1,7 @@
 variable "candidate" {
-  description = "andy"
+  default = "andy"
 }
 
 variable "vpc_cidr" {
-  description = "10.150.0.0/20"
+  default = "10.150.0.0/20"
 }
