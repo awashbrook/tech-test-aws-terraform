@@ -3,7 +3,7 @@
 ## Overview
 This technical test is intended to demonstrate knowledge on using AWS with Terraform, primarily around the use of EC2 and VPC. The code will not initially run, you are expected to fix various issues and then extend the solution.
 
-GOOD The bootstrap file used to run the application does not need to be altered in this exercise and the tasks can all be completed without accessing the instance. 
+ The bootstrap file used to run the application does not need to be altered in this exercise and the tasks can all be completed without accessing the instance. 
 
 If you do wish to access the instance for troubleshooting, you can use SSM Session Manager to connect to the instance if the AMI used has SSM Agent installed, however no access is required to complete this test.
 
@@ -24,13 +24,14 @@ hostname is: ip-xxx-xxx-xxx-xxx.eu-west-2.compute.internal
 
 - Restrict the security groups used to the minimum necessary for the application to be available on port 80 to any IP and internal communication limited to the minimum possible.
 
-- Apply the necessary changes to make the application have 3 nodes
+0 Apply the necessary changes to make the application have 3 nodes
 
 - Create an ALB to balance traffic between the nodes
 
 - Ensure the application nodes are in a private subnet without a public IP address
 
-- Makes sure the nodes are spread across multiple AZs
+0 Makes sure the nodes are spread across multiple AZs
 
 - Remove any terraform warnings
 
+THESE were ONE LINERs...
