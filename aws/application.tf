@@ -1,8 +1,8 @@
 resource "aws_autoscaling_group" "asg" {
   name                      = "${var.candidate}-frontend"
-  max_size                  = 3
+  max_size                  = var.number_of_azs
   min_size                  = 1
-  desired_capacity          = 3
+  desired_capacity          = var.number_of_azs
   health_check_grace_period = 300
   health_check_type         = "EC2"
   vpc_zone_identifier       = [aws_subnet.public[0].id, aws_subnet.public[1].id, aws_subnet.public[2].id]
@@ -106,9 +106,9 @@ resource "aws_security_group" "node" {
 
 resource "aws_security_group_rule" "node_ingress" {
   type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "all"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.node.id
 }
@@ -117,7 +117,7 @@ resource "aws_security_group_rule" "node_egress" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
-  protocol          = "all"
+  protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.node.id
 }

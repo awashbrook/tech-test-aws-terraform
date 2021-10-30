@@ -23,7 +23,7 @@ resource "aws_internet_gateway" "internet_gateway" {
 }
 
 resource "aws_subnet" "public" {
-  count = 3
+  count = var.number_of_azs
 
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = format("10.150.%d.0/27", count.index) # Need to be able to hold maximum 11 instances
@@ -44,7 +44,7 @@ resource "aws_route_table" "main-public" {
 
 # route associations public
 resource "aws_route_table_association" "main-public-1-a" {
-  count = 3
+  count = var.number_of_azs
 
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.main-public.id
