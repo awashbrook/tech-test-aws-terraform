@@ -22,7 +22,7 @@ resource "aws_autoscaling_group" "asg" {
 resource "aws_launch_template" "frontend" {
   name          = "${var.candidate}-frontend"
   image_id      = "ami-02f5781cba46a5e8a" # eu-west-2 
-  instance_type = "t2.micro"
+  instance_type = "t3.nano"
 
   user_data = filebase64("${path.module}/scripts/bootstrap.sh")
 

@@ -16,9 +16,9 @@ resource "aws_internet_gateway" "internet_gateway" {
 
 resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = var.vpc_cidr # Need to be able to hold maximum 11 instances
+  cidr_block        = "10.150.1.0/27" # Need to be able to hold maximum 11 instances
   availability_zone = "eu-west-2a"
-
+  # map_public_ip_on_launch = "true"
   tags = {
     Name = "${var.candidate}"
   }
