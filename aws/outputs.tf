@@ -10,10 +10,10 @@ output "igw_id" {
   description = "The ID of the Internet Gateway"
   value       = aws_internet_gateway.internet_gateway.id
 }
-# output "public_subnets_ids" {
-#   description = "List of IDs of public subnets"
-#   value       = aws_subnet.public.id
-# }
+output "public_subnets_ids" {
+  description = "List of IDs of public subnets"
+  value       = aws_subnet.public.*.id
+}
 # output "private_subnets_ids" {
 #   description = "List of IDs of private subnets"
 #   value       = 

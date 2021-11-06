@@ -1,6 +1,6 @@
 resource "aws_elb" "my-elb" {
   name            = "my-elb"
-  subnets         = [aws_subnet.public[1].id, aws_subnet.public[2].id] # Check HA 2 over N zones?
+  subnets         = slice(aws_subnet.public.*.id, 0, 2)
   security_groups = [aws_security_group.elb-securitygroup.id]
   listener {
     instance_port     = 80

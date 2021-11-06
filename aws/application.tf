@@ -5,7 +5,7 @@ resource "aws_autoscaling_group" "asg" {
   desired_capacity          = var.number_of_azs
   health_check_grace_period = 300
   health_check_type         = "EC2"
-  vpc_zone_identifier       = [aws_subnet.public[0].id, aws_subnet.public[1].id, aws_subnet.public[2].id]
+  vpc_zone_identifier       = aws_subnet.public.*.id
 
   launch_template {
     id      = aws_launch_template.frontend.id
