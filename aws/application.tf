@@ -1,27 +1,24 @@
 resource "aws_autoscaling_group" "asg" {
   name                      = "${var.candidate}-frontend"
+  vpc_zone_identifier       = aws_subnet.public.*.id
   max_size                  = var.number_of_azs
   min_size                  = 1
   desired_capacity          = var.number_of_azs
   health_check_grace_period = 300
-  health_check_type         = "EC2"
-  vpc_zone_identifier       = aws_subnet.public.*.id
+  health_check_type         = "ELB"
+  load_balancers            = [aws_elb.this.name]
+  force_delete              = true
 
   launch_template {
     id      = aws_launch_template.frontend.id
     version = "$Latest"
   }
 
-  tag {
-    key                 = "Name"
-    value               = var.candidate
-    propagate_at_launch = true
-  }
 }
 
 resource "aws_launch_template" "frontend" {
   name          = "${var.candidate}-frontend"
-  image_id      = "ami-02f5781cba46a5e8a" # eu-west-2 
+  image_id      = "ami-02f5781cba46a5e8a" # TODO eu-west-2 
   instance_type = "t3.nano"
 
   user_data = filebase64("${path.module}/scripts/bootstrap.sh")
@@ -31,7 +28,7 @@ resource "aws_launch_template" "frontend" {
   }
 
   network_interfaces {
-    associate_public_ip_address = true
+    associate_public_ip_address = true # TODO Make private
     security_groups = [
       "${aws_security_group.node.id}"
     ]
@@ -39,30 +36,24 @@ resource "aws_launch_template" "frontend" {
 
   tag_specifications {
     resource_type = "volume"
-    tags = {
-      Name = var.candidate
-    }
+
+    tags = local.preparedTags
   }
 
   tag_specifications {
     resource_type = "instance"
-    tags = {
-      Name = var.candidate
-    }
+
+    tags = local.preparedTags
   }
 
-  tags = {
-    Name = "${var.candidate}"
-  }
+  tags = local.preparedTags
 }
 
 resource "aws_iam_instance_profile" "node" {
   name = "${var.candidate}_instance_profile"
   role = aws_iam_role.node.name
 
-  tags = {
-    Name = "${var.candidate}"
-  }
+  tags = local.preparedTags
 }
 
 resource "aws_iam_role" "node" {
@@ -85,9 +76,7 @@ resource "aws_iam_role" "node" {
 }
 EOF
 
-  tags = {
-    Name = "${var.candidate}"
-  }
+  tags = local.preparedTags
 }
 
 resource "aws_iam_role_policy_attachment" "node" {
@@ -99,25 +88,19 @@ resource "aws_security_group" "node" {
   vpc_id = aws_vpc.vpc.id
   name   = "${var.candidate}-node"
 
-  tags = {
-    Name = "${var.candidate}"
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.elb.id]
   }
-}
 
-resource "aws_security_group_rule" "node_ingress" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.node.id
-}
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-resource "aws_security_group_rule" "node_egress" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.node.id
+  tags = local.preparedTags
 }
