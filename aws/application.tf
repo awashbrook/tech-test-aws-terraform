@@ -14,6 +14,11 @@ resource "aws_autoscaling_group" "asg" {
     version = "$Latest"
   }
 
+  tag {
+    key                 = "Name"
+    value               = var.candidate
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_launch_template" "frontend" {
@@ -53,7 +58,9 @@ resource "aws_iam_instance_profile" "node" {
   name = "${var.candidate}_instance_profile"
   role = aws_iam_role.node.name
 
-  tags = local.preparedTags
+  tags = merge(local.preparedTags, {
+    Role = "iam"
+  })
 }
 
 resource "aws_iam_role" "node" {
@@ -76,7 +83,9 @@ resource "aws_iam_role" "node" {
 }
 EOF
 
-  tags = local.preparedTags
+  tags = merge(local.preparedTags, {
+    Role = "iam"
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "node" {
@@ -102,5 +111,7 @@ resource "aws_security_group" "node" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = local.preparedTags
+  tags = merge(local.preparedTags, {
+    Role = "security-group-node"
+  })
 }
