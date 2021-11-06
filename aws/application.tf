@@ -23,7 +23,7 @@ resource "aws_autoscaling_group" "asg" {
 
 resource "aws_launch_template" "frontend" {
   name          = "${var.candidate}-frontend"
-  image_id      = "ami-02f5781cba46a5e8a" # TODO eu-west-2 
+  image_id      = var.AMIS[var.AWS_REGION]
   instance_type = "t3.nano"
 
   user_data = filebase64("${path.module}/scripts/bootstrap.sh")
