@@ -14,10 +14,10 @@ output "public_subnets_ids" {
   description = "List of IDs of public subnets"
   value       = aws_subnet.public.*.id
 }
-# output "private_subnets_ids" {
-#   description = "List of IDs of private subnets"
-#   value       = 
-# }
+output "private_subnets_ids" {
+  description = "List of IDs of private subnets"
+  value       = aws_subnet.private.*.id
+}
 output "elb_dns" {
   description = "Load balancer DNS name"
   value       = aws_elb.this.dns_name

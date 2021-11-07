@@ -1,6 +1,6 @@
 resource "aws_autoscaling_group" "asg" {
   name                      = "${var.candidate}-frontend"
-  vpc_zone_identifier       = aws_subnet.public.*.id
+  vpc_zone_identifier       = aws_subnet.private.*.id
   max_size                  = var.number_of_azs
   min_size                  = 1
   desired_capacity          = var.number_of_azs
@@ -33,7 +33,7 @@ resource "aws_launch_template" "frontend" {
   }
 
   network_interfaces {
-    associate_public_ip_address = true # TODO Make private
+    associate_public_ip_address = false
     security_groups = [
       "${aws_security_group.node.id}"
     ]
