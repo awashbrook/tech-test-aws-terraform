@@ -12,24 +12,31 @@ data "aws_availability_zones" "available" {
 }
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
-
-  tags = local.preparedTags
+  tags       = local.preparedTags
 }
 
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
-
-  tags = local.preparedTags
+  tags   = local.preparedTags
 }
 
 resource "aws_subnet" "public" {
   count = var.number_of_azs
 
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = format("10.150.%d.0/27", count.index) # Need to be able to hold maximum 11 instances
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  map_public_ip_on_launch = "true"
+  tags                    = local.preparedTags
+}
+
+resource "aws_subnet" "private" {
+  count = var.number_of_azs
+
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = format("10.150.%d.0/27", count.index) # Need to be able to hold maximum 11 instances
+  cidr_block        = format("10.150.%d.0/27", count.index + var.number_of_azs) # Need for subnets not to overlap
   availability_zone = data.aws_availability_zones.available.names[count.index]
-  # map_public_ip_on_launch = "true"
-  tags = local.preparedTags
+  tags              = local.preparedTags
 }
 
 resource "aws_route_table" "main-public" {
@@ -38,7 +45,6 @@ resource "aws_route_table" "main-public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.internet_gateway.id
   }
-
   tags = local.preparedTags
 }
 
