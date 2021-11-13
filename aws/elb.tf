@@ -1,6 +1,6 @@
 resource "aws_elb" "this" {
   name            = "this"
-  subnets         = aws_subnet.public.*.id
+  subnets         = aws_subnet.public[*].id
   security_groups = [aws_security_group.elb.id]
   listener {
     instance_port     = 80
