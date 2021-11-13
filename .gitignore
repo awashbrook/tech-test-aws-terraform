@@ -3,6 +3,6 @@ terraform.tfvars
 terraform.tfstate
 terraform.tfstate.backup
 .terraform
-tf.plan
-tf.plan.txt
+*tf.plan
+*tf.plan.txt
 .terraform.tfstate.lock.info
