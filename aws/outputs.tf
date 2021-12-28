@@ -26,3 +26,7 @@ output "elb_subnets_ids" {
   description = "List of IDs of public subnets containing load balancer"
   value       = aws_elb.this.subnets
 }
+output "test_elb_dns" {
+  description = "CLI test elb dns"
+  value       = join(" ", ["curl", aws_elb.this.dns_name, "80"])
+}
